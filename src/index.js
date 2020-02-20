@@ -33,10 +33,13 @@ app.get('/result/:palindromic', (req, res) => {
   const { palindromic } = req.params
   const array = [];
   for (var i = 0; i <= palindromic; i++) {     
-    const reversed = parseFloat(i.toString().split('').reverse().join('')) * Math.sign(i);    
-      if (reversed === i) {
+    const reversed = parseFloat(i.toString().split('').reverse().join('')) * Math.sign(i);
+    const reversedConvertedToBinary = Number(parseInt(reversed, 10).toString(2));  
+    const reversedBinary = parseFloat(reversedConvertedToBinary.toString().split('').reverse().join('')) * Math.sign(i);
+      if (reversed === i && reversedConvertedToBinary === reversedBinary) {
         const object = {}
         object['pal'] = i
+        object['bin'] = reversedBinary
         array.push(object)
       }
   }
