@@ -5,35 +5,9 @@ const crypto = require('crypto');
 const debug = require('debug')('app:scripts:api-keys');
 const MongoLib = require('../../lib/mongo');
 
-const adminScopes = [
-  'signin:auth',
-  'signup:auth',
-  'read:candies',
-  'create:candies',
-  'update:candies',
-  'delete:candies',
-  'read:user-candies',
-  'create:user-candies',
-  'delete:user-candies'
-];
-
-const publicScopes = [
-  'signin:auth',
-  'signup:auth',
-  'read:candies',
-  'read:user-candies',
-  'create:user-candies',
-  'delete:user-candies'
-];
-
 const apiKeys = [
   {
     token: generateRandomToken(),
-    scopes: adminScopes
-  },
-  {
-    token: generateRandomToken(),
-    scopes: publicScopes
   }
 ];
 
@@ -51,7 +25,7 @@ async function seedApiKeys() {
     });
 
     await Promise.all(promises);
-    debug(chalk.green(`${promises.length} api keys have been created succesfully`)); // prettier-ignore
+    debug(chalk.green(`${promises.length} api keys have been created succesfully`));
     return process.exit(0);
   } catch (error) {
     debug(chalk.red(error));

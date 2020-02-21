@@ -8,7 +8,6 @@ const { config } = require('../config');
 
 // Basic strategy
 require('../utils/auth/strategies/basic');
-require('../utils/auth/strategies/jwt');
 
 function authApi(app) {
   const router = express.Router();
@@ -58,11 +57,9 @@ function authApi(app) {
           if (!apiKey) {
             next(boom.unauthorized());
           }
-          const { _id: id, name, lastName, email } = user;
+          const { _id: id, email } = user;
           const payload = {
             sub: id,
-            name,
-            lastName,
             email,
             scopes: apiKey.scopes
           };
@@ -78,7 +75,12 @@ function authApi(app) {
   });
 
   router.post('/sign-up', async function(req, res, next) {
-    const { body: user } = req;
+    
+    const { email, password } = req.body;
+    const user = {}
+    user['email'] = email;
+    user['password'] = password;
+
     try {
       const createdUserId = await usersService.createUser(user);
       res.status(201).json({
@@ -104,18 +106,16 @@ function authApi(app) {
         if (!apiKey) {
           next(boom.unauthorized());
         }
-        const { _id: id, name, lastName, email } = queriedUser;
+        const { _id: id, email } = queriedUser;
         const payload = {
           sub: id,
-          name,
-          lastName,
           email,
           scopes: apiKey.scopes
         };
         const token = jwt.sign(payload, config.authJwtSecret, {
           expiresIn: '15m'
         });
-        return res.status(201).json({ token, user: { id, name, lastName, email } });
+        return res.status(201).json({ token, user: { id, email } });
       } catch (error) {
         next(error);
       }

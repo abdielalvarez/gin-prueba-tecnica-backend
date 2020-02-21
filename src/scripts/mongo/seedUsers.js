@@ -8,36 +8,26 @@ const { config } = require('../../config/index');
 
 const users = [
   {
-    name: 'ROOT',
-    lastName: 'ROOT',
     email: 'root@undefined.com',
-    password: config.defaultAdminPassword,
-    isAdmin: true
+    password: config.defaultUserPassword,
   },
   {
-    name: 'José',
-    lastName: 'María',
     email: 'jose@undefined.com',
     password: config.defaultUserPassword
   },
   {
-    name: 'María',
-    lastName: 'José',
     email: 'maria@undefined.com',
     password: config.defaultUserPassword
   }
 ];
 
 async function createUser(mongoDB, user) {
-  const { name, lastName, email, password, isAdmin } = user;
+  const { email, password } = user;
   const hashedPassword = await bcrypt.hash(password, 10);
 
   const userId = await mongoDB.create('users', {
-    name,
-    lastName,
     email,
     password: hashedPassword,
-    isAdmin: Boolean(isAdmin)
   });
 
   return userId;

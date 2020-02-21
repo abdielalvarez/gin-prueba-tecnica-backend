@@ -2,5 +2,16 @@
     "name": "gin-test",
     "version": 2,
     "builds": [{ "src": "src/**/*index.js", "use": "@now/node-server" }],
-    "routes": [{ "src": "/(.*)", "dest": "/src/index.js" }]
+    "routes": [{ "src": "/(.*)", "dest": "/src/index.js" }],
+    "env": {
+        "DB_USER": "@dbuser",
+        "DB_PASSWORD": "@dbpassword",
+        "DB_HOST": "@dbhost",
+        "DB_NAME": "@dbname",
+        "DEFAULT_USER_PASSWORD": "@defaultuserpassword",
+        "AUTH_JWT_SECRET": "@authjwtsecret",
+        "PUBLIC_API_KEY_TOKEN": "@publicapikeytoken",
+        "NODE_ENV": "@nodeenv",
+        "PORT": "@port"
+    }
 }

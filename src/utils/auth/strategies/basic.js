@@ -1,38 +1,23 @@
-const express = require('express');
-const cors = require('cors');
-const app = express();
-const { config } = require('./config');
-const { port } = config
-const authApi = require('./routes/auth');
-const candiesApi = require('./routes/candies');
+const passport = require('passport');
+const { BasicStrategy } = require('passport-http');
+const boom = require('@hapi/boom');
+const bcrypt = require('bcryptjs');
+const UserService = require('../../../services/users');
 
-// BodyParser
-app.use(express.json());
-app.use(express.urlencoded({
-    extended: true
-}));
-app.use(function (req, res, next) {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
-    next()
-})
+passport.use(new BasicStrategy(async (email, password, cb) => {
+    const userService = new UserService();
+    try {
+        const user = await userService.getUser({ email });
 
-app.use(cors())
+        if (!user)
+            return cb(boom.unauthorized(), false);
 
-app.get('/', (req, res) => {
-    const userInfo = req.header('user-agent');
-    res.send(`UserInfo: ${userInfo}`);
-});
-
-// Routes
-
-authApi(app)
-candiesApi(app)
-
-app.listen(port, err => {
-    if (err) {
-        console.error('Error: ', err);
-        return;
+        if (!(await bcrypt.compare(password, user.password)))
+            return cb(boom.unauthorized(), false);
+        delete user.password;
+        return cb(null, user);
+    } catch (error) {
+        console.log(error)
+        cb(error);
     }
-    console.log(`Listening http://localhost:${port}`);
-});
+}));

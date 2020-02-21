@@ -1,5 +1,5 @@
 const { MongoClient, ObjectId } = require('mongodb');
-const { config } = require('./config');
+const { config } = require('../config');
 const { dbUser, dbPassword, dbHost, dbName } = config;
 const DB_NAME = dbName;
 

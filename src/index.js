@@ -1,15 +1,14 @@
 const express = require('express');
 const cors = require('cors');
 const app = express();
-// const { config } = require('./config');
-// const { port } = config
-// const authApi = require('./routes/auth');
-// const candiesApi = require('./routes/candies');
+const { config } = require('./config');
+const { port } = config
+const authApi = require('./routes/auth');
 
 // BodyParser
 app.use(express.json());
 app.use(express.urlencoded({
-    extended: true
+    extended: false
 }));
 app.use(function (req, res, next) {
     res.header('Access-Control-Allow-Origin', '*');
@@ -26,8 +25,7 @@ app.get('/', (req, res) => {
 
 // Routes
 
-// authApi(app)
-// candiesApi(app)
+authApi(app)
 
 app.get('/result/:palindromic', (req, res) => {
   const { palindromic } = req.params
@@ -46,7 +44,6 @@ app.get('/result/:palindromic', (req, res) => {
   res.send(array)
 })
 
-const port = 3001
 app.listen(port, err => {
     if (err) {
         console.error('Error: ', err);
